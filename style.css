@@ -1,0 +1,186 @@
+@import url("https://fonts.googleapis.com/css2?family=Bilbo+Swash+Caps&display=swap");
+
+body {
+  font-family: "Bilbo Swash Caps", cursive;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height for vertical centering */
+  background-color: white;
+  margin: 0;
+  padding: 0;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  max-width: 100%; /* Ensures logo scales on smaller screens */
+  height: auto;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap; /* Allows items to wrap to the next line on smaller screens */
+  gap: 20px; /* Spacing between the form boxes */
+  margin-top: 10px;
+  margin-bottom: 50px;
+  width: 100%; /* Ensures full width on smaller screens */
+  max-width: 1200px; /* Limit max width to maintain readability on large screens */
+  padding: 0 20px;
+}
+
+.form-box {
+  background-color: white;
+  padding: 20px;
+  border: 2px solid #1f1e1e;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 300px; /* Fixed width to align form-boxes side by side */
+  font-size: 1.2em;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"] {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 2px solid black;
+  border-radius: 4px;
+  font-family: "Bilbo Swash Caps", cursive;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #cf5e9c;
+  color: white;
+  border: 2px solid black;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.5em;
+  font-weight: bold;
+  font-family: "Bilbo Swash Caps", cursive;
+}
+
+button:hover {
+  background-color: #f2d0df;
+}
+
+#response {
+  text-align: center;
+  margin-top: -80px;
+  color: #cf5e9c;
+  font-size: 1.5em;
+  font-weight: bolder;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  body {
+    height: auto; /* Allow body height to auto-adjust for smaller screens */
+    min-height: 100vh; /* Ensure full-screen height on smaller screens */
+    justify-content: flex-start; /* Align content from the top */
+  }
+
+  .logo-container {
+    margin-top: 50px; /* Adds more space between logo and top on smaller screens */
+  }
+
+  .container {
+    flex-direction: column; /* Stack form-boxes vertically on smaller screens */
+    align-items: center;
+    padding: 0 5px;
+  }
+
+  .form-box {
+    width: 70%; /* Take full width on smaller screens */
+    max-width: 100%;
+    padding: 15px;
+    font-size: 1em;
+  }
+
+  button {
+    font-size: 1.2em;
+    padding: 8px;
+  }
+
+  input[type="text"],
+  input[type="email"] {
+    font-size: 1.2em;
+  }
+
+  label {
+    font-size: 1.3em;
+  }
+
+  #response {
+    font-size: 1.3em;
+  }
+}
+
+/* Smaller input boxes for horizontal orientation on small screens */
+@media (max-width: 768px) and (orientation: landscape) {
+  input[type="text"],
+  input[type="email"] {
+    width: 70%; /* Reduce input width for landscape orientation */
+    font-size: 1.1em;
+    padding: 6px;
+  }
+
+  button {
+    padding: 8px;
+    font-size: 1.1em;
+  }
+
+  label {
+    font-size: 1.2em;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-container {
+    margin-top: 80px; /* Adds even more space for very small screens */
+  }
+
+  .container {
+    padding: 0 5px;
+  }
+
+  .form-box {
+    padding: 15px;
+    font-size: 1em;
+  }
+
+  button {
+    font-size: 1em;
+    padding: 6px;
+  }
+
+  input[type="text"],
+  input[type="email"] {
+    font-size: 1.1em;
+  }
+
+  label {
+    font-size: 1.2em;
+  }
+
+  #response {
+    font-size: 1.1em;
+  }
+}
