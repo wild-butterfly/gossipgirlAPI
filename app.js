@@ -112,18 +112,18 @@ app.put("/members/:id", (req, res) => {
 app.delete("/members/:id", (req, res) => {
   const deletedId = parseInt(req.params.id);
 
-  // 1. Kaydı Sil
+  
   db.query("DELETE FROM members WHERE id = ?", [deletedId], (err, result) => {
     if (err) return res.status(500).json({ error: "Delete error" });
 
-    // 2. Silinen ID'den büyük olan tüm ID'leri 1 azalt
+  
     db.query(
       "UPDATE members SET id = id - 1 WHERE id > ? ORDER BY id ASC",
       [deletedId],
       (err) => {
         if (err) return res.status(500).json({ error: "Reorder error" });
 
-        // 3. Auto increment değerini en son ID’ye göre yeniden ayarla
+      
         db.query(
           "SELECT MAX(id) AS maxId FROM members",
           (err, rows) => {
