@@ -83,32 +83,31 @@ button:hover {
 
 #response {
   text-align: center;
-  margin-top: -80px;
+  margin-top: 0px;
   color: #cf5e9c;
   font-size: 1.5em;
   font-weight: bolder;
 }
 
-/* Responsive adjustments for smaller screens */
 @media (max-width: 768px) {
   body {
-    height: auto; /* Allow body height to auto-adjust for smaller screens */
-    min-height: 100vh; /* Ensure full-screen height on smaller screens */
-    justify-content: flex-start; /* Align content from the top */
+    height: auto;
+    min-height: 100vh;
+    justify-content: flex-start;
   }
 
   .logo-container {
-    margin-top: 50px; /* Adds more space between logo and top on smaller screens */
+    margin-top: 50px;
   }
 
   .container {
-    flex-direction: column; /* Stack form-boxes vertically on smaller screens */
+    flex-direction: column;
     align-items: center;
     padding: 0 5px;
   }
 
   .form-box {
-    width: 70%; /* Take full width on smaller screens */
+    width: 70%;
     max-width: 100%;
     padding: 15px;
     font-size: 1em;
@@ -133,11 +132,10 @@ button:hover {
   }
 }
 
-/* Smaller input boxes for horizontal orientation on small screens */
 @media (max-width: 768px) and (orientation: landscape) {
   input[type="text"],
   input[type="email"] {
-    width: 70%; /* Reduce input width for landscape orientation */
+    width: 70%;
     font-size: 1.1em;
     padding: 6px;
   }
@@ -154,7 +152,7 @@ button:hover {
 
 @media (max-width: 480px) {
   .logo-container {
-    margin-top: 80px; /* Adds even more space for very small screens */
+    margin-top: 80px;
   }
 
   .container {

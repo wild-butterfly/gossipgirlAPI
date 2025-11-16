@@ -1,63 +1,48 @@
-require("dotenv").config();
+// ---------------------------------------------
+//  Gossip Girl API - Clean & Working Version
+// ---------------------------------------------
+
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 const path = require("path");
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 
+// Middleware
 app.use(express.json());
 app.use(cors());
 
+// Serve static files (index.html, style.css, gglogo.png)
 app.use(express.static(path.join(__dirname)));
 
+// Serve homepage
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
+// ---------------------------------------------
+//  MySQL Database Connection
+// ---------------------------------------------
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: "localhost",
+  user: "root",
+  password: "password",   // kendi şifreni yaz
+  database: "my_database",
 });
 
 db.connect((err) => {
   if (err) {
-    console.error("Error connecting to the database:", err);
+    console.error("❌ Database connection error:", err);
     return;
   }
-  console.log("Connected to the MySQL database");
+  console.log("✅ Connected to MySQL database");
 });
 
-app.get("/members", (req, res) => {
-  db.query("SELECT * FROM member", (err, results) => {
-    if (err) {
-      console.error("Error fetching data:", err);
-      res.status(500).send("Error fetching data");
-      return;
-    }
-    res.json(results);
-  });
-});
-
-app.get("/members/:id", (req, res) => {
-  const { id } = req.params;
-  db.query("SELECT * FROM member WHERE id = ?", [id], (err, results) => {
-    if (err) {
-      console.error("Error fetching data:", err);
-      res.status(500).send("Error fetching data");
-      return;
-    }
-    if (results.length === 0) {
-      res.status(404).send("Member not found");
-      return;
-    }
-    res.json(results[0]);
-  });
-});
-
+// ---------------------------------------------
+//  CREATE MEMBER  (POST)
+// ---------------------------------------------
 app.post("/members", (req, res) => {
   const { name, last_name, email } = req.body;
 
@@ -68,139 +53,106 @@ app.post("/members", (req, res) => {
   }
 
   db.query(
-    "INSERT INTO member (name, last_name, email) VALUES (?, ?, ?)",
+    "INSERT INTO members (name, last_name, email) VALUES (?, ?, ?)",
     [name, last_name, email],
     (err, result) => {
       if (err) {
-        console.error("Error inserting data:", err);
-        res.status(500).send("Error inserting data");
-        return;
+        console.error("❌ Insert error:", err);
+        return res
+          .status(500)
+          .json({ error: "Database insert error", details: err });
       }
-      res.status(201).json({
-        message: "Member successfully added.",
+
+      res.json({
+        message: "Member added successfully!",
         id: result.insertId,
-        name,
-        last_name,
-        email,
       });
     }
   );
 });
 
+// ---------------------------------------------
+//  GET ALL MEMBERS (GET)
+// ---------------------------------------------
+app.get("/members", (req, res) => {
+  db.query("SELECT * FROM members", (err, results) => {
+    if (err) {
+      console.error("❌ Fetch error:", err);
+      return res.status(500).json({ error: "Database fetch error" });
+    }
+
+    res.json(results);
+  });
+});
+
+// ---------------------------------------------
+//  UPDATE MEMBER (PUT)
+// ---------------------------------------------
 app.put("/members/:id", (req, res) => {
   const { id } = req.params;
   const { name, last_name, email } = req.body;
+
   db.query(
-    "UPDATE member SET name = ?, last_name = ?, email = ? WHERE id = ?",
+    "UPDATE members SET name=?, last_name=?, email=? WHERE id=?",
     [name, last_name, email, id],
-    (err, result) => {
+    (err) => {
       if (err) {
-        console.error("Error updating data:", err);
-        res.status(500).send("Error updating data");
-        return;
+        console.error("❌ Update error:", err);
+        return res.status(500).json({ error: "Database update error" });
       }
-      res.status(200).json({ message: "Member successfully edited." });
+
+      res.json({ message: "Member updated successfully!" });
     }
   );
 });
 
-app.patch("/members/:id", (req, res) => {
-  const { id } = req.params;
-  const fields = [];
-  const values = [];
-
-  for (const [key, value] of Object.entries(req.body)) {
-    fields.push(`${key} = ?`);
-    values.push(value);
-  }
-  values.push(id);
-
-  const sql = `UPDATE member SET ${fields.join(", ")} WHERE id = ?`;
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      console.error("Error updating data:", err);
-      res.status(500).send("Error updating data");
-      return;
-    }
-    res.status(200).json({ message: "Member successfully edited." });
-  });
-});
-
+// ---------------------------------------------
+//  DELETE MEMBER (DELETE)
+// ---------------------------------------------
 app.delete("/members/:id", (req, res) => {
-  const { id } = req.params;
+  const deletedId = parseInt(req.params.id);
 
-  db.beginTransaction((err) => {
-    if (err) {
-      console.error("Error starting transaction:", err);
-      res.status(500).send("Error starting transaction");
-      return;
-    }
+  // 1. Kaydı Sil
+  db.query("DELETE FROM members WHERE id = ?", [deletedId], (err, result) => {
+    if (err) return res.status(500).json({ error: "Delete error" });
 
-    db.query("DELETE FROM member WHERE id = ?", [id], (err, result) => {
-      if (err) {
-        console.error("Error deleting data:", err);
-        db.rollback(() => {
-          res.status(500).send("Error deleting data");
-        });
-        return;
-      }
+    // 2. Silinen ID'den büyük olan tüm ID'leri 1 azalt
+    db.query(
+      "UPDATE members SET id = id - 1 WHERE id > ? ORDER BY id ASC",
+      [deletedId],
+      (err) => {
+        if (err) return res.status(500).json({ error: "Reorder error" });
 
-      db.query(
-        "UPDATE member SET id = id - 1 WHERE id > ?",
-        [id],
-        (err, result) => {
-          if (err) {
-            console.error("Error updating IDs:", err);
-            db.rollback(() => {
-              res.status(500).send("Error updating IDs");
-            });
-            return;
-          }
+        // 3. Auto increment değerini en son ID’ye göre yeniden ayarla
+        db.query(
+          "SELECT MAX(id) AS maxId FROM members",
+          (err, rows) => {
+            if (err) return res.status(500).json({ error: "Auto increment read error" });
 
-          db.query("SELECT MAX(id) AS max_id FROM member", (err, result) => {
-            if (err) {
-              console.error("Error getting max ID:", err);
-              db.rollback(() => {
-                res.status(500).send("Error getting max ID");
-              });
-              return;
-            }
+            const newAutoInc = rows[0].maxId + 1;
 
-            const maxId = result[0].max_id || 0;
             db.query(
-              `ALTER TABLE member AUTO_INCREMENT = ${maxId + 1}`,
-              (err, result) => {
-                if (err) {
-                  console.error("Error resetting AUTO_INCREMENT value:", err);
-                  db.rollback(() => {
-                    res
-                      .status(500)
-                      .send("Error resetting AUTO_INCREMENT value");
-                  });
-                  return;
-                }
+              `ALTER TABLE members AUTO_INCREMENT = ${newAutoInc}`,
+              (err) => {
+                if (err)
+                  return res.status(500).json({ error: "Auto increment update error" });
 
-                db.commit((err) => {
-                  if (err) {
-                    console.error("Error committing transaction:", err);
-                    db.rollback(() => {
-                      res.status(500).send("Error committing transaction");
-                    });
-                    return;
-                  }
-                  res.status(200).json({
-                    message: "Member successfully deleted.",
-                  });
+                res.json({
+                  message: "Member deleted and IDs reordered!",
                 });
               }
             );
-          });
-        }
-      );
-    });
+          }
+        );
+      }
+    );
   });
 });
 
+
+// ---------------------------------------------
+//  START SERVER
+// ---------------------------------------------
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`🚀 Server running on http://localhost:${port}`);
 });

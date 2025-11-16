@@ -1,229 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Registration Form</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bilbo+Swash+Caps&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="logo-container">
-      <img src="gglogo.png" alt="Gossip Girl Logo" class="logo" />
-    </div>
-    <div class="container">
-      <div class="form-box">
-        <button id="toggleRegistrationForm">Registration Form</button>
-        <div id="registrationFormContainer" style="display: none">
-          <form id="registrationForm">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required /><br /><br />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gossip Girl Members</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 
-            <label for="last_name">Last Name:</label>
-            <input
-              type="text"
-              id="last_name"
-              name="last_name"
-              required
-            /><br /><br />
+<body>
+  <div class="logo-container">
+    <img src="gglogo.png" class="logo" />
+  </div>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required /><br /><br />
+  <div class="container">
 
-            <button type="submit">Register</button>
-          </form>
-        </div>
-      </div>
+    <!-- Registration -->
+    <div class="form-box">
+      <button id="toggleRegistrationForm">Registration Form</button>
 
-      <div class="form-box">
-        <button id="toggleEditForm">Edit Member Form</button>
-        <div id="editFormContainer" style="display: none">
-          <form id="editForm">
-            <label for="edit_id">ID:</label>
-            <input
-              type="text"
-              id="edit_id"
-              name="edit_id"
-              required
-            /><br /><br />
+      <div id="registrationFormContainer" style="display:none;">
+        <form id="registrationForm">
+          <label>Name:</label>
+          <input type="text" id="name" required>
 
-            <label for="edit_name">Name:</label>
-            <input
-              type="text"
-              id="edit_name"
-              name="edit_name"
-              required
-            /><br /><br />
+          <label>Last Name:</label>
+          <input type="text" id="last_name" required>
 
-            <label for="edit_last_name">Last Name:</label>
-            <input
-              type="text"
-              id="edit_last_name"
-              name="edit_last_name"
-              required
-            /><br /><br />
+          <label>Email:</label>
+          <input type="email" id="email" required>
 
-            <label for="edit_email">Email:</label>
-            <input
-              type="email"
-              id="edit_email"
-              name="edit_email"
-              required
-            /><br /><br />
-
-            <button type="submit">Edit</button>
-          </form>
-        </div>
-      </div>
-
-      <div class="form-box">
-        <button id="toggleDeleteForm">Delete Member Form</button>
-        <div id="deleteFormContainer" style="display: none">
-          <form id="deleteForm">
-            <label for="delete_id">ID:</label>
-            <input
-              type="text"
-              id="delete_id"
-              name="delete_id"
-              required
-            /><br /><br />
-
-            <button type="submit">Delete</button>
-          </form>
-        </div>
+          <button type="submit">Register</button>
+        </form>
       </div>
     </div>
 
-    <p id="response"></p>
+    <!-- Edit -->
+    <div class="form-box">
+      <button id="toggleEditForm">Edit Member Form</button>
 
-    <script>
-      document
-        .getElementById("registrationForm")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
+      <div id="editFormContainer" style="display:none;">
+        <form id="editForm">
+          <label>ID:</label>
+          <input type="number" id="edit_id" required>
 
-          const name = document.getElementById("name").value;
-          const last_name = document.getElementById("last_name").value;
-          const email = document.getElementById("email").value;
+          <label>Name:</label>
+          <input type="text" id="edit_name" required>
 
-          fetch("http://localhost:3000/members", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ name, last_name, email }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              document.getElementById("response").innerText =
-                data.message || "Registration successful!";
-            })
-            .catch((error) => {
-              document.getElementById("response").innerText =
-                "An error occurred: " + error.message;
-            });
-        });
+          <label>Last Name:</label>
+          <input type="text" id="edit_last_name" required>
 
-      document
-        .getElementById("editForm")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
+          <label>Email:</label>
+          <input type="email" id="edit_email" required>
 
-          const id = document.getElementById("edit_id").value;
-          const name = document.getElementById("edit_name").value;
-          const last_name = document.getElementById("edit_last_name").value;
-          const email = document.getElementById("edit_email").value;
+          <button type="submit">Edit</button>
+        </form>
+      </div>
+    </div>
 
-          fetch(`http://localhost:3000/members/${id}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ name, last_name, email }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              document.getElementById("response").innerText =
-                data.message || "Member successfully edited!";
-            })
-            .catch((error) => {
-              document.getElementById("response").innerText =
-                "An error occurred: " + error.message;
-            });
-        });
+    <!-- Delete -->
+    <div class="form-box">
+      <button id="toggleDeleteForm">Delete Member Form</button>
 
-      document
-        .getElementById("deleteForm")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
+      <div id="deleteFormContainer" style="display:none;">
+        <form id="deleteForm">
+          <label>ID:</label>
+          <input type="number" id="delete_id" required>
+          <button type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
 
-          const id = document.getElementById("delete_id").value;
+  </div>
 
-          fetch(`http://localhost:3000/members/${id}`, {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              document.getElementById("response").innerText =
-                data.message || "Member successfully deleted!";
-            })
-            .catch((error) => {
-              document.getElementById("response").innerText =
-                "An error occurred: " + error.message;
-            });
-        });
+  <p id="response"></p>
 
-      document
-        .getElementById("toggleRegistrationForm")
-        .addEventListener("click", function () {
-          const formContainer = document.getElementById(
-            "registrationFormContainer"
-          );
-          if (formContainer.style.display === "none") {
-            formContainer.style.display = "block";
-            this.innerText = "Hide Registration Form";
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          } else {
-            formContainer.style.display = "none";
-            this.innerText = "Show Registration Form";
-          }
-        });
+  <script>
+    const responseBox = document.getElementById("response");
 
-      document
-        .getElementById("toggleEditForm")
-        .addEventListener("click", function () {
-          const formContainer = document.getElementById("editFormContainer");
-          if (formContainer.style.display === "none") {
-            formContainer.style.display = "block";
-            this.innerText = "Hide Edit Member Form";
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          } else {
-            formContainer.style.display = "none";
-            this.innerText = "Show Edit Member Form";
-          }
-        });
+    // CREATE
+    document.getElementById("registrationForm").addEventListener("submit", (e) => {
+      e.preventDefault();
 
-      document
-        .getElementById("toggleDeleteForm")
-        .addEventListener("click", function () {
-          const formContainer = document.getElementById("deleteFormContainer");
-          if (formContainer.style.display === "none") {
-            formContainer.style.display = "block";
-            this.innerText = "Hide Delete Member Form";
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          } else {
-            formContainer.style.display = "none";
-            this.innerText = "Show Delete Member Form";
-          }
-        });
-    </script>
-  </body>
+      const name = document.getElementById("name").value;
+      const last_name = document.getElementById("last_name").value;
+      const email = document.getElementById("email").value;
+
+      fetch("http://localhost:3000/members", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, last_name, email }),
+      })
+        .then(res => res.json())
+        .then(data => responseBox.innerText = data.message)
+        .catch(err => responseBox.innerText = err.message);
+    });
+
+    // UPDATE
+    document.getElementById("editForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const id = document.getElementById("edit_id").value;
+      const name = document.getElementById("edit_name").value;
+      const last_name = document.getElementById("edit_last_name").value;
+      const email = document.getElementById("edit_email").value;
+
+      fetch(`http://localhost:3000/members/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, last_name, email }),
+      })
+        .then(res => res.json())
+        .then(data => responseBox.innerText = data.message)
+        .catch(err => responseBox.innerText = err.message);
+    });
+
+    // DELETE
+    document.getElementById("deleteForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const id = document.getElementById("delete_id").value;
+
+      fetch(`http://localhost:3000/members/${id}`, {
+        method: "DELETE",
+      })
+        .then(res => res.json())
+        .then(data => responseBox.innerText = data.message)
+        .catch(err => responseBox.innerText = err.message);
+    });
+
+    // Toggle helpers
+    function toggle(id, button, title) {
+      const box = document.getElementById(id);
+      const btn = document.getElementById(button);
+
+      if (box.style.display === "none") {
+        box.style.display = "block";
+        btn.innerText = "Hide " + title;
+      } else {
+        box.style.display = "none";
+        btn.innerText = title;
+      }
+    }
+
+    document.getElementById("toggleRegistrationForm").onclick =
+      () => toggle("registrationFormContainer", "toggleRegistrationForm", "Registration Form");
+
+    document.getElementById("toggleEditForm").onclick =
+      () => toggle("editFormContainer", "toggleEditForm", "Edit Member Form");
+
+    document.getElementById("toggleDeleteForm").onclick =
+      () => toggle("deleteFormContainer", "toggleDeleteForm", "Delete Member Form");
+  </script>
+
+</body>
 </html>
